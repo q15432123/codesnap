@@ -3,250 +3,304 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CodeSnap — AI Code Explainer, Debugger & Converter</title>
-<meta name="description" content="Paste code → instantly get AI explanations, bug detection, optimization tips, and language conversion. Free, no signup.">
+<title>CodeSnap — AI Code Explainer, Debugger & Converter | Free Online Tool</title>
+<meta name="description" content="Paste code → instantly get AI explanations, bug detection, security scans, optimization tips, and language conversion. Free, no signup required.">
+<meta name="keywords" content="code explainer, debug code online, code converter, AI code review, code optimizer, free code analysis">
 <meta property="og:title" content="CodeSnap — Understand Any Code Instantly">
-<meta property="og:description" content="AI-powered code explainer, debugger, and converter. Paste code, get answers.">
+<meta property="og:description" content="AI-powered code explainer, debugger, and converter. Paste code, get answers. Free, no signup.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://codesnap.dev">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="CodeSnap — AI Code Tool">
+<meta name="twitter:description" content="Explain, debug, convert, optimize any code with AI. Free.">
+<link rel="canonical" href="https://codesnap.dev">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+
+<!-- JSON-LD Structured Data -->
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebApplication","name":"CodeSnap","description":"AI-powered code explainer, debugger, converter, and optimizer","url":"https://codesnap.dev","applicationCategory":"DeveloperApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+</script>
+
+<!-- CodeMirror -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/lib/codemirror.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/theme/material-darker.css">
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/lib/codemirror.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/meta.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/javascript/javascript.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/python/python.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/clike/clike.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/go/go.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/rust/rust.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/php/php.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/ruby/ruby.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/sql/sql.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/shell/shell.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/htmlmixed/htmlmixed.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/css/css.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/mode/xml/xml.min.js"></script>
+
+<!-- Marked + Highlight.js -->
+<script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github-dark.min.css">
+<script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/core.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/python.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/javascript.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/typescript.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/go.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/rust.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/java.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/bash.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/languages/sql.min.js"></script>
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#0f0f17;--s1:#161625;--s2:#1e1e32;--bd:#2a2a45;--t1:#e8e8f0;--t2:#8888a0;
---ac:#7c5cfc;--ac2:#a78bfa;--g:#34d399;--r:#f87171;--y:#fbbf24;--b:#60a5fa;
---radius:12px}
+--ac:#7c5cfc;--ac2:#a78bfa;--g:#34d399;--r:#f87171;--y:#fbbf24;--b:#60a5fa;--radius:12px}
 body{font-family:-apple-system,'Segoe UI','Noto Sans TC',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh}
 a{color:var(--ac2);text-decoration:none}
 
-/* Header */
-.header{text-align:center;padding:48px 20px 32px}
-.logo{font-size:36px;font-weight:800;background:linear-gradient(135deg,var(--ac),var(--ac2),var(--b));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.tagline{color:var(--t2);font-size:15px;margin-top:8px}
-.badges{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
-.badge{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;border:1px solid var(--bd);color:var(--t2)}
+.header{text-align:center;padding:40px 20px 24px}
+.logo{font-size:32px;font-weight:800;background:linear-gradient(135deg,var(--ac),var(--ac2),var(--b));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.tagline{color:var(--t2);font-size:14px;margin-top:6px}
+.badges{display:flex;gap:6px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.badge{padding:3px 10px;border-radius:20px;font-size:10px;font-weight:600;border:1px solid var(--bd);color:var(--t2)}
 
-/* Main */
-.main{max-width:1100px;margin:0 auto;padding:0 20px 60px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.features{max-width:900px;margin:0 auto 20px;padding:0 20px;display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+@media(max-width:640px){.features{grid-template-columns:repeat(2,1fr)}}
+.feat{background:var(--s1);border:1px solid var(--bd);border-radius:8px;padding:12px;text-align:center;cursor:default}
+.feat-icon{font-size:22px}.feat-t{font-size:11px;font-weight:600;margin-top:2px}.feat-d{font-size:9px;color:var(--t2);margin-top:2px}
+
+.main{max-width:1100px;margin:0 auto;padding:0 16px 40px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media(max-width:768px){.main{grid-template-columns:1fr}}
 
-/* Input Panel */
-.panel{background:var(--s1);border:1px solid var(--bd);border-radius:var(--radius);overflow:hidden}
-.panel-h{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid var(--bd);background:rgba(124,92,252,.03)}
-.panel-h h2{font-size:12px;font-weight:600;color:var(--ac2);text-transform:uppercase;letter-spacing:1px}
+.panel{background:var(--s1);border:1px solid var(--bd);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column}
+.panel-h{display:flex;justify-content:space-between;align-items:center;padding:8px 14px;border-bottom:1px solid var(--bd)}
+.panel-h h2{font-size:11px;font-weight:600;color:var(--ac2);text-transform:uppercase;letter-spacing:1px}
+.panel-h .hint{font-size:9px;color:var(--t2)}
 
-textarea{width:100%;height:320px;background:var(--bg);border:none;padding:16px;font-family:'Fira Code','Cascadia Code','SF Mono',monospace;font-size:13px;line-height:1.6;color:var(--t1);resize:vertical;outline:none}
-textarea::placeholder{color:var(--t2)}
+.CodeMirror{height:300px!important;font-size:13px;background:var(--bg)!important}
+@media(max-width:768px){.CodeMirror{height:200px!important}}
 
-/* Controls */
-.controls{padding:12px 16px;border-top:1px solid var(--bd);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-select{background:var(--s2);border:1px solid var(--bd);color:var(--t1);padding:8px 12px;border-radius:8px;font-size:12px;outline:none;cursor:pointer}
-select:focus{border-color:var(--ac)}
+.controls{padding:8px 12px;border-top:1px solid var(--bd);display:flex;gap:5px;flex-wrap:wrap;align-items:center}
+.btn{padding:6px 14px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;border:none;transition:all .15s;white-space:nowrap}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.15)}
+.btn:disabled{opacity:.3;cursor:not-allowed;transform:none!important;filter:none!important}
+.btn:active{transform:scale(.97)}
+.b-explain{background:var(--ac);color:#fff}
+.b-debug{background:var(--r);color:#fff}
+.b-convert{background:var(--b);color:#fff}
+.b-optimize{background:var(--g);color:#000}
+.b-doc{background:#e879f9;color:#000}
+.b-test{background:var(--y);color:#000}
+.b-refactor{background:#fb923c;color:#000}
+.b-security{background:#ef4444;color:#fff}
+.b-ghost{background:transparent;border:1px solid var(--bd);color:var(--t2);padding:5px 10px;font-size:10px}
+.b-ghost:hover{border-color:var(--ac);color:var(--ac)}
 
-.btn{padding:8px 20px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
-.btn-primary{background:var(--ac);color:#fff}
-.btn-primary:hover{background:var(--ac2);transform:translateY(-1px);box-shadow:0 4px 20px rgba(124,92,252,.3)}
-.btn-ghost{background:transparent;border:1px solid var(--bd);color:var(--t2)}
-.btn-ghost:hover{border-color:var(--ac);color:var(--ac)}
-.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
+select{background:var(--s2);border:1px solid var(--bd);color:var(--t1);padding:6px 8px;border-radius:7px;font-size:11px;outline:none}
 
-.btn-explain{background:var(--ac)}
-.btn-debug{background:var(--r)}
-.btn-convert{background:var(--b)}
-.btn-optimize{background:var(--g);color:#000}
-
-/* Output Panel */
-.output{padding:20px;font-size:13px;line-height:1.8;min-height:320px;overflow-y:auto;white-space:pre-wrap;word-break:break-word}
-.output h1,.output h2,.output h3{color:var(--ac2);margin:12px 0 6px;font-size:14px}
-.output code{background:var(--s2);padding:2px 6px;border-radius:4px;font-family:'Fira Code',monospace;font-size:12px}
-.output pre{background:var(--bg);padding:14px;border-radius:8px;overflow-x:auto;margin:8px 0;border:1px solid var(--bd)}
-.output pre code{background:none;padding:0}
-.output ul,.output ol{margin-left:20px}
+.output{flex:1;padding:16px;font-size:13px;line-height:1.8;overflow-y:auto;min-height:300px}
+.output h1,.output h2,.output h3{color:var(--ac2);margin:14px 0 6px}
+.output h1{font-size:16px}.output h2{font-size:14px}.output h3{font-size:13px}
+.output code{background:var(--s2);padding:1px 5px;border-radius:3px;font-size:12px;font-family:'Fira Code',monospace}
+.output pre{background:#0d1117!important;padding:12px;border-radius:8px;overflow-x:auto;margin:8px 0;border:1px solid var(--bd)}
+.output pre code{background:none!important;padding:0!important}
+.output ul,.output ol{margin-left:18px}
 .output strong{color:var(--g)}
+.output table{width:100%;border-collapse:collapse;margin:8px 0;font-size:12px}
+.output th,.output td{border:1px solid var(--bd);padding:5px 8px;text-align:left}
+.output th{background:var(--s2)}
+.output a{color:var(--ac2)}
 .output blockquote{border-left:3px solid var(--ac);padding-left:12px;color:var(--t2);margin:8px 0}
-.placeholder{color:var(--t2);font-style:italic;display:flex;align-items:center;justify-content:center;height:100%;font-size:14px}
-
-/* Loading */
-.loading{display:flex;align-items:center;gap:8px;color:var(--ac2);padding:20px}
-.spinner{width:16px;height:16px;border:2px solid var(--bd);border-top-color:var(--ac);border-radius:50%;animation:spin .6s linear infinite}
+.placeholder{color:var(--t2);display:flex;align-items:center;justify-content:center;height:100%;font-size:13px;flex-direction:column;gap:8px}
+.placeholder kbd{background:var(--s2);padding:2px 8px;border-radius:4px;font-size:11px;border:1px solid var(--bd)}
+.loading{display:flex;align-items:center;gap:8px;color:var(--ac2);padding:20px;font-size:13px}
+.spinner{width:14px;height:14px;border:2px solid var(--bd);border-top-color:var(--ac);border-radius:50%;animation:spin .5s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* Footer */
-.footer{text-align:center;padding:40px 20px;color:var(--t2);font-size:12px;border-top:1px solid var(--bd)}
-.footer a{color:var(--ac2)}
-
-/* Features */
-.features{max-width:1100px;margin:0 auto 40px;padding:0 20px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-@media(max-width:768px){.features{grid-template-columns:1fr 1fr}}
-.feat{background:var(--s1);border:1px solid var(--bd);border-radius:var(--radius);padding:20px;text-align:center}
-.feat-icon{font-size:28px;margin-bottom:8px}
-.feat-title{font-size:13px;font-weight:600;margin-bottom:4px}
-.feat-desc{font-size:11px;color:var(--t2);line-height:1.5}
-
-/* Copy button */
-.copy-btn{position:absolute;top:8px;right:8px;background:var(--s2);border:1px solid var(--bd);color:var(--t2);padding:4px 10px;border-radius:6px;font-size:10px;cursor:pointer}
+.output-wrap{position:relative;flex:1;display:flex;flex-direction:column}
+.copy-btn{position:absolute;top:6px;right:6px;background:var(--s2);border:1px solid var(--bd);color:var(--t2);padding:3px 8px;border-radius:5px;font-size:9px;cursor:pointer;z-index:2;transition:all .15s}
 .copy-btn:hover{color:var(--ac);border-color:var(--ac)}
-.output-wrap{position:relative}
+
+/* History sidebar */
+.hist-toggle{position:fixed;top:12px;right:12px;z-index:90;background:var(--s1);border:1px solid var(--bd);color:var(--t2);width:32px;height:32px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;transition:all .15s}
+.hist-toggle:hover{color:var(--ac);border-color:var(--ac)}
+.hist{position:fixed;top:0;right:-320px;width:300px;height:100vh;background:var(--s1);border-left:1px solid var(--bd);z-index:80;transition:right .3s;overflow-y:auto;padding:16px}
+.hist.open{right:0}
+.hist h3{font-size:11px;color:var(--ac2);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;display:flex;justify-content:space-between}
+.hist h3 button{background:none;border:none;color:var(--t2);cursor:pointer;font-size:9px}
+.hist h3 button:hover{color:var(--r)}
+.hist-item{padding:8px;background:var(--s2);border:1px solid var(--bd);border-radius:6px;margin-bottom:6px;cursor:pointer;transition:border .15s;position:relative}
+.hist-item:hover{border-color:var(--ac)}
+.hist-item .hi-type{font-size:9px;font-weight:600;color:var(--ac2)}
+.hist-item .hi-code{font-size:10px;color:var(--t2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hist-item .hi-time{font-size:8px;color:var(--t2);opacity:.5;margin-top:2px}
+.hist-item .hi-del{position:absolute;top:4px;right:6px;background:none;border:none;color:var(--t2);cursor:pointer;font-size:10px;opacity:0;transition:opacity .15s}
+.hist-item:hover .hi-del{opacity:1}
+.hist-item .hi-del:hover{color:var(--r)}
+.hist-empty{color:var(--t2);font-size:11px;text-align:center;padding:20px 0}
+
+.footer{text-align:center;padding:32px 20px;color:var(--t2);font-size:11px;border-top:1px solid var(--bd)}
 </style>
 </head>
 <body>
 
+<button class="hist-toggle" onclick="toggleHist()" title="History">&#128338;</button>
+<div class="hist" id="hist">
+  <h3>History <button onclick="clearHist()">Clear All</button></h3>
+  <div id="hist-list"><div class="hist-empty">No history yet</div></div>
+</div>
+
 <div class="header">
-  <div class="logo">⚡ CodeSnap</div>
-  <div class="tagline">Paste code → AI explains, debugs, converts, optimizes. Instantly.</div>
-  <div class="badges">
-    <span class="badge">Free</span>
-    <span class="badge">No Signup</span>
-    <span class="badge">30+ Languages</span>
-    <span class="badge">AI-Powered</span>
-  </div>
+  <h1 class="logo">⚡ CodeSnap</h1>
+  <p class="tagline">Paste code → AI explains, debugs, converts, optimizes. Instantly.</p>
+  <div class="badges"><span class="badge">Free</span><span class="badge">No Signup</span><span class="badge">30+ Languages</span><span class="badge">AI-Powered</span></div>
 </div>
 
 <div class="features">
-  <div class="feat"><div class="feat-icon">💡</div><div class="feat-title">Explain</div><div class="feat-desc">Understand any code in seconds</div></div>
-  <div class="feat"><div class="feat-icon">🐛</div><div class="feat-title">Debug</div><div class="feat-desc">Find bugs & security issues</div></div>
-  <div class="feat"><div class="feat-icon">🔄</div><div class="feat-title">Convert</div><div class="feat-desc">Translate between languages</div></div>
-  <div class="feat"><div class="feat-icon">🚀</div><div class="feat-title">Optimize</div><div class="feat-desc">Make your code faster</div></div>
+  <div class="feat"><div class="feat-icon">💡</div><div class="feat-t">Explain</div><div class="feat-d">Understand any code</div></div>
+  <div class="feat"><div class="feat-icon">🐛</div><div class="feat-t">Debug</div><div class="feat-d">Find bugs & fixes</div></div>
+  <div class="feat"><div class="feat-icon">🔄</div><div class="feat-t">Convert</div><div class="feat-d">Any language to any</div></div>
+  <div class="feat"><div class="feat-icon">🚀</div><div class="feat-t">Optimize</div><div class="feat-d">Make it faster</div></div>
 </div>
 
 <div class="main">
-  <!-- Input -->
   <div class="panel">
-    <div class="panel-h"><h2>Your Code</h2></div>
-    <textarea id="code" placeholder="Paste your code here...
-
-Examples:
-  • A function you don't understand
-  • Code with a mysterious bug
-  • Python code you want in JavaScript
-  • Slow code that needs optimization"></textarea>
+    <div class="panel-h"><h2>Your Code</h2><span class="hint">Ctrl+Enter to analyze</span></div>
+    <div id="editor-wrap"></div>
     <div class="controls">
-      <select id="lang">
-        <option value="">Auto-detect</option>
-        <option value="python">Python</option>
-        <option value="javascript">JavaScript</option>
-        <option value="typescript">TypeScript</option>
-        <option value="java">Java</option>
-        <option value="c">C</option>
-        <option value="cpp">C++</option>
-        <option value="csharp">C#</option>
-        <option value="go">Go</option>
-        <option value="rust">Rust</option>
-        <option value="php">PHP</option>
-        <option value="ruby">Ruby</option>
-        <option value="swift">Swift</option>
-        <option value="kotlin">Kotlin</option>
-        <option value="sql">SQL</option>
-        <option value="html">HTML</option>
-        <option value="css">CSS</option>
-        <option value="bash">Bash</option>
-      </select>
-      <button class="btn btn-explain btn-primary" onclick="run('explain')">💡 Explain</button>
-      <button class="btn btn-debug" onclick="run('debug')">🐛 Debug</button>
-      <select id="target" style="display:none">
-        <option value="python">→ Python</option>
-        <option value="javascript">→ JavaScript</option>
-        <option value="typescript">→ TypeScript</option>
-        <option value="java">→ Java</option>
-        <option value="go">→ Go</option>
-        <option value="rust">→ Rust</option>
-        <option value="csharp">→ C#</option>
-      </select>
-      <button class="btn btn-convert" onclick="toggleConvert()">🔄 Convert</button>
-      <button class="btn btn-optimize" onclick="run('optimize')">🚀 Optimize</button>
+      <button class="btn b-explain" onclick="run('explain')">💡 Explain</button>
+      <button class="btn b-debug" onclick="run('debug')">🐛 Debug</button>
+      <select id="target" style="width:90px"><option value="python">→ Python</option><option value="javascript">→ JS</option><option value="typescript">→ TS</option><option value="go">→ Go</option><option value="rust">→ Rust</option><option value="java">→ Java</option></select>
+      <button class="btn b-convert" onclick="run('convert')">🔄</button>
+      <button class="btn b-optimize" onclick="run('optimize')">🚀</button>
+      <button class="btn b-doc" onclick="run('document')">📝</button>
+      <button class="btn b-test" onclick="run('test')">🧪</button>
+      <button class="btn b-refactor" onclick="run('refactor')">♻️</button>
+      <button class="btn b-security" onclick="run('security')">🔒</button>
     </div>
   </div>
 
-  <!-- Output -->
   <div class="panel">
     <div class="panel-h"><h2 id="out-title">Result</h2></div>
     <div class="output-wrap">
-      <div class="output" id="out"><div class="placeholder">Results will appear here</div></div>
+      <div class="output" id="out"><div class="placeholder">Results appear here<br><kbd>Ctrl+Enter</kbd> = Explain</div></div>
       <button class="copy-btn" id="cpbtn" onclick="copyResult()" style="display:none">Copy</button>
     </div>
   </div>
 </div>
 
-<div class="footer">
-  <p>Built with ⚡ by CodeSnap · <a href="https://github.com/q15432123/codesnap" target="_blank">GitHub</a></p>
-  <p style="margin-top:4px">Powered by AI · No data stored · 100% free</p>
-</div>
+<footer class="footer">
+  <p>Built by <strong>Claude Opus 4.6</strong> (Anthropic) · <a href="https://github.com/q15432123/codesnap" target="_blank">GitHub</a> · AI vs AI Competition Entry</p>
+  <p style="margin-top:4px">No data stored · 100% free · Powered by Kimi AI</p>
+</footer>
 
 <script>
-const $=id=>document.getElementById(id);
-let convertMode=false;
+// ─── CodeMirror Editor ───
+const editor=CodeMirror(document.getElementById('editor-wrap'),{
+  theme:'material-darker',lineNumbers:true,tabSize:2,indentWithTabs:false,
+  lineWrapping:true,placeholder:'Paste your code here...',
+  extraKeys:{'Ctrl-Enter':()=>run('explain'),'Cmd-Enter':()=>run('explain')},
+});
+editor.setSize(null,'100%');
 
-function toggleConvert(){
-  convertMode=!convertMode;
-  $('target').style.display=convertMode?'inline-block':'none';
-  if(convertMode)run('convert');
+// Auto-detect language
+const LANG_MAP={python:'python',javascript:'javascript',typescript:'javascript',go:'go',rust:'rust',java:'text/x-java',c:'text/x-csrc',cpp:'text/x-c++src',csharp:'text/x-csharp',php:'php',ruby:'ruby',sql:'sql',bash:'shell',html:'htmlmixed',css:'css'};
+function detectLang(code){
+  if(/^(import |from .+ import |def |class .*:)/.test(code))return 'python';
+  if(/^(const |let |var |function |=>|import .+ from)/.test(code))return 'javascript';
+  if(/^(package |func |import \()/.test(code))return 'go';
+  if(/^(fn |let mut |use |pub )/.test(code))return 'rust';
+  if(/^(public class |private |protected )/.test(code))return 'java';
+  if(/^<[!a-z]/i.test(code))return 'html';
+  if(/^(SELECT |INSERT |CREATE |ALTER )/i.test(code))return 'sql';
+  return '';
 }
+editor.on('change',()=>{
+  const code=editor.getValue();
+  const lang=detectLang(code);
+  if(lang&&LANG_MAP[lang])editor.setOption('mode',LANG_MAP[lang]);
+});
+
+// ─── Marked config ───
+marked.setOptions({highlight:(code,lang)=>{try{return lang&&hljs.getLanguage(lang)?hljs.highlight(code,{language:lang}).value:code}catch(e){return code}}});
+
+const $=id=>document.getElementById(id);
+const TITLES={explain:'💡 Explanation',debug:'🐛 Bug Report',convert:'🔄 Converted',optimize:'🚀 Optimized',document:'📝 Documentation',test:'🧪 Unit Tests',refactor:'♻️ Refactored',security:'🔒 Security Audit'};
 
 async function run(action){
-  const code=$('code').value.trim();
+  const code=editor.getValue().trim();
   if(!code){$('out').innerHTML='<div class="placeholder">Paste some code first!</div>';return}
-
-  const lang=$('lang').value;
+  const lang=detectLang(code);
   const target=$('target').value;
-  const titles={explain:'💡 Explanation',debug:'🐛 Bug Report',convert:`🔄 Converted to ${target}`,optimize:'🚀 Optimized'};
-  $('out-title').textContent=titles[action]||'Result';
-  $('out').innerHTML='<div class="loading"><div class="spinner"></div>Analyzing...</div>';
-  $('cpbtn').style.display='none';
 
-  // Disable buttons
+  $('out-title').textContent=TITLES[action]||'Result';
+  $('out').innerHTML='<div class="loading"><div class="spinner"></div>Analyzing with AI...</div>';
+  $('cpbtn').style.display='none';
   document.querySelectorAll('.btn').forEach(b=>b.disabled=true);
 
   try{
     const body={code,lang};
     if(action==='convert')body.target_lang=target;
-
     const r=await fetch('/api/'+action,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-    if(!r.ok){
-      const e=await r.text();
-      $('out').innerHTML=`<div style="color:var(--r)">Error ${r.status}: ${e.slice(0,200)}</div>`;
-      return;
-    }
+    if(!r.ok){const e=await r.json().catch(()=>({error:'Server error'}));$('out').innerHTML=`<div style="color:var(--r);padding:20px">Error: ${e.error||r.status}</div>`;return}
     const data=await r.json();
-    $('out').innerHTML=md(data.result||'No result');
+    const html=marked.parse(data.result||'No result');
+    $('out').innerHTML=html;
     $('cpbtn').style.display='block';
+    // Save to history
+    saveHist(action,code,data.result);
   }catch(e){
-    $('out').innerHTML=`<div style="color:var(--r)">Error: ${e.message}</div>`;
+    $('out').innerHTML=`<div style="color:var(--r);padding:20px">Error: ${e.message}</div>`;
   }finally{
     document.querySelectorAll('.btn').forEach(b=>b.disabled=false);
   }
 }
 
-function md(s){
-  let h=s;
-  h=h.replace(/```(\w*)\n([\s\S]*?)```/g,'<pre><code>$2</code></pre>');
-  h=h.replace(/`(.+?)`/g,'<code>$1</code>');
-  h=h.replace(/^### (.+)$/gm,'<h3>$1</h3>');
-  h=h.replace(/^## (.+)$/gm,'<h2>$1</h2>');
-  h=h.replace(/^# (.+)$/gm,'<h1>$1</h1>');
-  h=h.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
-  h=h.replace(/\*(.+?)\*/g,'<em>$1</em>');
-  h=h.replace(/^- (.+)$/gm,'<li>$1</li>');
-  h=h.replace(/^\d+\. (.+)$/gm,'<li>$1</li>');
-  h=h.replace(/\n\n+/g,'</p><p>');
-  return '<p>'+h+'</p>';
-}
-
 function copyResult(){
   const text=$('out').innerText;
-  navigator.clipboard.writeText(text).then(()=>{
-    $('cpbtn').textContent='Copied!';
-    setTimeout(()=>$('cpbtn').textContent='Copy',1500);
-  });
+  navigator.clipboard.writeText(text).then(()=>{$('cpbtn').textContent='Copied!';setTimeout(()=>$('cpbtn').textContent='Copy',1500)});
 }
 
-// Auto-detect language from code
-$('code').addEventListener('input',()=>{
-  const c=$('code').value;
-  if(!$('lang').value){
-    if(/^(import |from .+ import |def |class .*:)/.test(c))$('lang').value='python';
-    else if(/^(const |let |var |function |=>|import .+ from)/.test(c))$('lang').value='javascript';
-    else if(/^(package |func |import \()/.test(c))$('lang').value='go';
-    else if(/^(fn |let mut |use |pub )/.test(c))$('lang').value='rust';
-  }
-});
+// ─── History (localStorage) ───
+const HIST_KEY='codesnap_history';
+function getHist(){try{return JSON.parse(localStorage.getItem(HIST_KEY)||'[]')}catch(e){return[]}}
+function saveHist(action,code,result){
+  const h=getHist();
+  h.unshift({action,code:code.slice(0,80),fullCode:code,result,time:Date.now()});
+  if(h.length>20)h.length=20;
+  localStorage.setItem(HIST_KEY,JSON.stringify(h));
+  renderHist();
+}
+function renderHist(){
+  const h=getHist();
+  if(!h.length){$('hist-list').innerHTML='<div class="hist-empty">No history yet</div>';return}
+  $('hist-list').innerHTML=h.map((item,i)=>{
+    const ago=Math.floor((Date.now()-item.time)/60000);
+    const timeStr=ago<1?'just now':ago<60?ago+'m ago':Math.floor(ago/60)+'h ago';
+    return `<div class="hist-item" onclick="loadHist(${i})">
+      <span class="hi-type">${TITLES[item.action]||item.action}</span>
+      <div class="hi-code">${item.code.replace(/</g,'&lt;')}</div>
+      <div class="hi-time">${timeStr}</div>
+      <button class="hi-del" onclick="event.stopPropagation();delHist(${i})">✕</button>
+    </div>`;
+  }).join('');
+}
+function loadHist(i){
+  const h=getHist();
+  if(!h[i])return;
+  editor.setValue(h[i].fullCode||h[i].code);
+  $('out').innerHTML=marked.parse(h[i].result||'');
+  $('out-title').textContent=TITLES[h[i].action]||'Result';
+  $('cpbtn').style.display='block';
+}
+function delHist(i){
+  const h=getHist();h.splice(i,1);
+  localStorage.setItem(HIST_KEY,JSON.stringify(h));renderHist();
+}
+function clearHist(){localStorage.removeItem(HIST_KEY);renderHist()}
+function toggleHist(){$('hist').classList.toggle('open')}
+renderHist();
 </script>
 </body>
 </html>
