@@ -31,6 +31,10 @@
 {"@context":"https://schema.org","@type":"HowTo","name":"How to use CodeSnap","step":[{"@type":"HowToStep","name":"Paste code","text":"Paste your code snippet into the editor"},{"@type":"HowToStep","name":"Choose action","text":"Click Explain, Debug, Convert, Optimize, or other tools"},{"@type":"HowToStep","name":"Get results","text":"AI analyzes your code and shows results instantly with streaming"}]}
 </script>
 
+<!-- Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
 <!-- CodeMirror -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/lib/codemirror.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/theme/material-darker.css">
@@ -66,7 +70,7 @@
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#0f0f17;--s1:#161625;--s2:#1e1e32;--bd:#2a2a45;--t1:#e8e8f0;--t2:#8888a0;
 --ac:#7c5cfc;--ac2:#a78bfa;--g:#34d399;--r:#f87171;--y:#fbbf24;--b:#60a5fa;--radius:12px}
-body{font-family:-apple-system,'Segoe UI','Noto Sans TC',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh}
+body{font-family:'Inter',-apple-system,'Segoe UI','Noto Sans TC',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh}
 a{color:var(--ac2);text-decoration:none}
 
 .header{text-align:center;padding:40px 20px 24px}
@@ -150,7 +154,41 @@ select{background:var(--s2);border:1px solid var(--bd);color:var(--t1);padding:6
 .hist-item .hi-del:hover{color:var(--r)}
 .hist-empty{color:var(--t2);font-size:11px;text-align:center;padding:20px 0}
 
+/* SEO Content Sections */
+.seo-section{max-width:900px;margin:40px auto;padding:0 20px}
+.seo-h2{font-size:18px;font-weight:700;margin-bottom:16px;color:var(--t1)}
+.seo-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:640px){.seo-grid{grid-template-columns:1fr}}
+.seo-card{background:var(--s1);border:1px solid var(--bd);border-radius:var(--radius);padding:20px}
+.seo-card h3{font-size:14px;font-weight:600;color:var(--ac2);margin-bottom:8px}
+.seo-card p{font-size:12px;color:var(--t2);line-height:1.7}
+
+/* Language tags */
+.lang-tags{display:flex;flex-wrap:wrap;gap:6px}
+.lang-tags span{padding:4px 10px;border-radius:6px;font-size:11px;background:var(--s1);border:1px solid var(--bd);color:var(--t2)}
+
+/* FAQ accordion */
+.faq{background:var(--s1);border:1px solid var(--bd);border-radius:8px;margin-bottom:6px}
+.faq summary{padding:12px 16px;cursor:pointer;font-size:13px;font-weight:600;color:var(--t1);list-style:none}
+.faq summary::before{content:"▸ ";color:var(--ac2)}
+.faq[open] summary::before{content:"▾ "}
+.faq p{padding:0 16px 14px;font-size:12px;color:var(--t2);line-height:1.7}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--ac);color:#fff;padding:8px 20px;border-radius:8px;font-size:12px;font-weight:600;opacity:0;transition:opacity .3s;z-index:999;pointer-events:none}
+.toast.show{opacity:1}
+
+/* Ambient background */
+.ambient{position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:-1;
+  background:radial-gradient(ellipse at 20% 50%,rgba(124,92,252,.04),transparent 50%),
+             radial-gradient(ellipse at 80% 50%,rgba(96,165,250,.04),transparent 50%);
+  animation:ambientDrift 20s ease-in-out infinite alternate}
+@keyframes ambientDrift{0%{background-position:0% 50%}100%{background-position:100% 50%}}
+
 .footer{text-align:center;padding:32px 20px;color:var(--t2);font-size:11px;border-top:1px solid var(--bd)}
+
+/* CodeMirror font override */
+.CodeMirror{font-family:'JetBrains Mono','Fira Code','Cascadia Code',monospace!important}
 </style>
 </head>
 <body>
@@ -200,10 +238,57 @@ select{background:var(--s2);border:1px solid var(--bd);color:var(--t1);padding:6
   </div>
 </div>
 
+<!-- SEO Content: Features -->
+<section class="seo-section" aria-label="Features">
+  <h2 class="seo-h2">What Can CodeSnap Do?</h2>
+  <div class="seo-grid">
+    <article class="seo-card">
+      <h3>💡 AI Code Explanation</h3>
+      <p>Paste any code snippet and get a clear, structured explanation in seconds. CodeSnap breaks down complex logic into bullet points, identifies design patterns, and explains the purpose of each section. Supports 30+ programming languages with automatic detection.</p>
+    </article>
+    <article class="seo-card">
+      <h3>🐛 Automated Bug Detection</h3>
+      <p>Find bugs before they reach production. CodeSnap performs deep static analysis powered by AI, detecting logic errors, null pointer risks, off-by-one errors, and security vulnerabilities. Each issue is rated by severity with a suggested fix.</p>
+    </article>
+    <article class="seo-card">
+      <h3>🔄 Code Language Conversion</h3>
+      <p>Convert code between any two programming languages instantly. Python to JavaScript, Go to Rust, Java to TypeScript — CodeSnap translates not just syntax but idioms, using target-language best practices and conventions.</p>
+    </article>
+    <article class="seo-card">
+      <h3>🚀 Performance Optimization</h3>
+      <p>Get actionable optimization suggestions for your code. CodeSnap analyzes time and space complexity, identifies bottlenecks, suggests more efficient algorithms, and shows the optimized version with comments explaining each improvement.</p>
+    </article>
+  </div>
+</section>
+
+<!-- SEO Content: Supported Languages -->
+<section class="seo-section" aria-label="Supported Languages">
+  <h2 class="seo-h2">Supported Programming Languages</h2>
+  <div class="lang-tags">
+    <span>Python</span><span>JavaScript</span><span>TypeScript</span><span>Java</span><span>C</span><span>C++</span><span>C#</span><span>Go</span><span>Rust</span><span>Ruby</span><span>PHP</span><span>Swift</span><span>Kotlin</span><span>Scala</span><span>R</span><span>MATLAB</span><span>SQL</span><span>HTML</span><span>CSS</span><span>Bash</span><span>PowerShell</span><span>Lua</span><span>Perl</span><span>Haskell</span><span>Elixir</span><span>Dart</span><span>Clojure</span><span>Objective-C</span><span>F#</span><span>Assembly</span><span>COBOL</span>
+  </div>
+</section>
+
+<!-- SEO Content: FAQ (accordion, matches JSON-LD) -->
+<section class="seo-section" aria-label="FAQ">
+  <h2 class="seo-h2">Frequently Asked Questions</h2>
+  <details class="faq"><summary>How does CodeSnap explain code?</summary><p>Paste any code snippet and AI breaks it down line by line, explaining the logic, patterns, and purpose. It automatically detects the programming language and responds in the same language as your code comments.</p></details>
+  <details class="faq"><summary>Can CodeSnap convert Python to JavaScript?</summary><p>Yes. CodeSnap converts between 30+ languages including Python, JavaScript, TypeScript, Java, Go, Rust, C++, Ruby, PHP, Swift, Kotlin, and more. It uses idiomatic patterns for the target language.</p></details>
+  <details class="faq"><summary>Is CodeSnap free to use?</summary><p>Completely free. No signup, no login, no credit card required. Your code is never stored — it's sent to the AI for analysis and immediately discarded.</p></details>
+  <details class="faq"><summary>What programming languages does CodeSnap support?</summary><p>CodeSnap supports over 30 languages: Python, JavaScript, TypeScript, Java, C, C++, C#, Go, Rust, Ruby, PHP, Swift, Kotlin, Scala, R, SQL, HTML/CSS, Bash, PowerShell, Lua, Perl, Haskell, Elixir, Dart, and more.</p></details>
+  <details class="faq"><summary>Does CodeSnap store my code?</summary><p>No. CodeSnap does not store, log, or share your code. It's sent directly to the AI model for analysis and discarded after the response is generated. Your code stays private.</p></details>
+</section>
+
 <footer class="footer">
   <p>Built by <strong>Claude Opus 4.6</strong> (Anthropic) · <a href="https://github.com/q15432123/codesnap" target="_blank">GitHub</a> · AI vs AI Competition Entry</p>
   <p style="margin-top:4px">No data stored · 100% free · Powered by Kimi AI</p>
 </footer>
+
+<!-- Toast notification -->
+<div class="toast" id="toast"></div>
+
+<!-- Ambient background -->
+<div class="ambient"></div>
 
 <script>
 // ─── CodeMirror Editor ───
@@ -318,7 +403,11 @@ function retry(){if(_lastAction)run(_lastAction)}
 
 function copyResult(){
   const text=$('out').innerText;
-  navigator.clipboard.writeText(text).then(()=>{$('cpbtn').textContent='Copied!';setTimeout(()=>$('cpbtn').textContent='Copy',1500)});
+  navigator.clipboard.writeText(text).then(()=>toast('Copied to clipboard!'));
+}
+function toast(msg){
+  const t=$('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2000);
 }
 
 // ─── History (localStorage) ───

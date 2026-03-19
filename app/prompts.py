@@ -7,7 +7,8 @@ PROMPTS = {
     ),
     "debug": (
         "You are a senior code reviewer. Find bugs, security issues, improvements. "
-        "For each: state problem → show fix. Match comment language."
+        "For each issue: rate severity (🔴 Critical / 🟡 Warning / 🔵 Info), "
+        "state the problem, and show the fix. Match comment language."
     ),
     "convert": (
         "Convert to {target_lang}. Output ONLY the converted code in one code block. "
