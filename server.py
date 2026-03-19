@@ -102,8 +102,10 @@ async def _call_llm(system: str, user: str) -> str:
     raise HTTPException(502, {"error": last_err, "code": "LLM_FAILED"})
 
 # ─── Models ───
+from pydantic import Field
+
 class CodeReq(BaseModel):
-    code: str
+    code: str = Field(..., max_length=10000)
     lang: str = ""
     target_lang: str = ""
 
@@ -189,4 +191,4 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 if __name__ == "__main__":
     import uvicorn
     print("⚡ CodeSnap at http://127.0.0.1:8080")
-    uvicorn.run(app, host="127.0.0.1", port=8080)
+    uvicorn.run(app, host="0.0.0.0", port=8080)

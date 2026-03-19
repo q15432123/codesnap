@@ -1,0 +1,23 @@
+name: Test & Lint
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      KIMI_API_KEY: test-key-for-ci
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - name: Lint with ruff
+        run: ruff check server.py
+      - name: Run tests
+        run: pytest tests/ -v
