@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CodeSnap — AI Code Explainer, Debugger & Converter</title>
+<meta name="description" content="Paste code → instantly get AI explanations, bug detection, optimization tips, and language conversion. Free, no signup.">
+<meta property="og:title" content="CodeSnap — Understand Any Code Instantly">
+<meta property="og:description" content="AI-powered code explainer, debugger, and converter. Paste code, get answers.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0f0f17;--s1:#161625;--s2:#1e1e32;--bd:#2a2a45;--t1:#e8e8f0;--t2:#8888a0;
+--ac:#7c5cfc;--ac2:#a78bfa;--g:#34d399;--r:#f87171;--y:#fbbf24;--b:#60a5fa;
+--radius:12px}
+body{font-family:-apple-system,'Segoe UI','Noto Sans TC',sans-serif;background:var(--bg);color:var(--t1);min-height:100vh}
+a{color:var(--ac2);text-decoration:none}
+
+/* Header */
+.header{text-align:center;padding:48px 20px 32px}
+.logo{font-size:36px;font-weight:800;background:linear-gradient(135deg,var(--ac),var(--ac2),var(--b));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.tagline{color:var(--t2);font-size:15px;margin-top:8px}
+.badges{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+.badge{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;border:1px solid var(--bd);color:var(--t2)}
+
+/* Main */
+.main{max-width:1100px;margin:0 auto;padding:0 20px 60px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:768px){.main{grid-template-columns:1fr}}
+
+/* Input Panel */
+.panel{background:var(--s1);border:1px solid var(--bd);border-radius:var(--radius);overflow:hidden}
+.panel-h{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;border-bottom:1px solid var(--bd);background:rgba(124,92,252,.03)}
+.panel-h h2{font-size:12px;font-weight:600;color:var(--ac2);text-transform:uppercase;letter-spacing:1px}
+
+textarea{width:100%;height:320px;background:var(--bg);border:none;padding:16px;font-family:'Fira Code','Cascadia Code','SF Mono',monospace;font-size:13px;line-height:1.6;color:var(--t1);resize:vertical;outline:none}
+textarea::placeholder{color:var(--t2)}
+
+/* Controls */
+.controls{padding:12px 16px;border-top:1px solid var(--bd);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+select{background:var(--s2);border:1px solid var(--bd);color:var(--t1);padding:8px 12px;border-radius:8px;font-size:12px;outline:none;cursor:pointer}
+select:focus{border-color:var(--ac)}
+
+.btn{padding:8px 20px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:var(--ac);color:#fff}
+.btn-primary:hover{background:var(--ac2);transform:translateY(-1px);box-shadow:0 4px 20px rgba(124,92,252,.3)}
+.btn-ghost{background:transparent;border:1px solid var(--bd);color:var(--t2)}
+.btn-ghost:hover{border-color:var(--ac);color:var(--ac)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important}
+
+.btn-explain{background:var(--ac)}
+.btn-debug{background:var(--r)}
+.btn-convert{background:var(--b)}
+.btn-optimize{background:var(--g);color:#000}
+
+/* Output Panel */
+.output{padding:20px;font-size:13px;line-height:1.8;min-height:320px;overflow-y:auto;white-space:pre-wrap;word-break:break-word}
+.output h1,.output h2,.output h3{color:var(--ac2);margin:12px 0 6px;font-size:14px}
+.output code{background:var(--s2);padding:2px 6px;border-radius:4px;font-family:'Fira Code',monospace;font-size:12px}
+.output pre{background:var(--bg);padding:14px;border-radius:8px;overflow-x:auto;margin:8px 0;border:1px solid var(--bd)}
+.output pre code{background:none;padding:0}
+.output ul,.output ol{margin-left:20px}
+.output strong{color:var(--g)}
+.output blockquote{border-left:3px solid var(--ac);padding-left:12px;color:var(--t2);margin:8px 0}
+.placeholder{color:var(--t2);font-style:italic;display:flex;align-items:center;justify-content:center;height:100%;font-size:14px}
+
+/* Loading */
+.loading{display:flex;align-items:center;gap:8px;color:var(--ac2);padding:20px}
+.spinner{width:16px;height:16px;border:2px solid var(--bd);border-top-color:var(--ac);border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Footer */
+.footer{text-align:center;padding:40px 20px;color:var(--t2);font-size:12px;border-top:1px solid var(--bd)}
+.footer a{color:var(--ac2)}
+
+/* Features */
+.features{max-width:1100px;margin:0 auto 40px;padding:0 20px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+@media(max-width:768px){.features{grid-template-columns:1fr 1fr}}
+.feat{background:var(--s1);border:1px solid var(--bd);border-radius:var(--radius);padding:20px;text-align:center}
+.feat-icon{font-size:28px;margin-bottom:8px}
+.feat-title{font-size:13px;font-weight:600;margin-bottom:4px}
+.feat-desc{font-size:11px;color:var(--t2);line-height:1.5}
+
+/* Copy button */
+.copy-btn{position:absolute;top:8px;right:8px;background:var(--s2);border:1px solid var(--bd);color:var(--t2);padding:4px 10px;border-radius:6px;font-size:10px;cursor:pointer}
+.copy-btn:hover{color:var(--ac);border-color:var(--ac)}
+.output-wrap{position:relative}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">⚡ CodeSnap</div>
+  <div class="tagline">Paste code → AI explains, debugs, converts, optimizes. Instantly.</div>
+  <div class="badges">
+    <span class="badge">Free</span>
+    <span class="badge">No Signup</span>
+    <span class="badge">30+ Languages</span>
+    <span class="badge">AI-Powered</span>
+  </div>
+</div>
+
+<div class="features">
+  <div class="feat"><div class="feat-icon">💡</div><div class="feat-title">Explain</div><div class="feat-desc">Understand any code in seconds</div></div>
+  <div class="feat"><div class="feat-icon">🐛</div><div class="feat-title">Debug</div><div class="feat-desc">Find bugs & security issues</div></div>
+  <div class="feat"><div class="feat-icon">🔄</div><div class="feat-title">Convert</div><div class="feat-desc">Translate between languages</div></div>
+  <div class="feat"><div class="feat-icon">🚀</div><div class="feat-title">Optimize</div><div class="feat-desc">Make your code faster</div></div>
+</div>
+
+<div class="main">
+  <!-- Input -->
+  <div class="panel">
+    <div class="panel-h"><h2>Your Code</h2></div>
+    <textarea id="code" placeholder="Paste your code here...
+
+Examples:
+  • A function you don't understand
+  • Code with a mysterious bug
+  • Python code you want in JavaScript
+  • Slow code that needs optimization"></textarea>
+    <div class="controls">
+      <select id="lang">
+        <option value="">Auto-detect</option>
+        <option value="python">Python</option>
+        <option value="javascript">JavaScript</option>
+        <option value="typescript">TypeScript</option>
+        <option value="java">Java</option>
+        <option value="c">C</option>
+        <option value="cpp">C++</option>
+        <option value="csharp">C#</option>
+        <option value="go">Go</option>
+        <option value="rust">Rust</option>
+        <option value="php">PHP</option>
+        <option value="ruby">Ruby</option>
+        <option value="swift">Swift</option>
+        <option value="kotlin">Kotlin</option>
+        <option value="sql">SQL</option>
+        <option value="html">HTML</option>
+        <option value="css">CSS</option>
+        <option value="bash">Bash</option>
+      </select>
+      <button class="btn btn-explain btn-primary" onclick="run('explain')">💡 Explain</button>
+      <button class="btn btn-debug" onclick="run('debug')">🐛 Debug</button>
+      <select id="target" style="display:none">
+        <option value="python">→ Python</option>
+        <option value="javascript">→ JavaScript</option>
+        <option value="typescript">→ TypeScript</option>
+        <option value="java">→ Java</option>
+        <option value="go">→ Go</option>
+        <option value="rust">→ Rust</option>
+        <option value="csharp">→ C#</option>
+      </select>
+      <button class="btn btn-convert" onclick="toggleConvert()">🔄 Convert</button>
+      <button class="btn btn-optimize" onclick="run('optimize')">🚀 Optimize</button>
+    </div>
+  </div>
+
+  <!-- Output -->
+  <div class="panel">
+    <div class="panel-h"><h2 id="out-title">Result</h2></div>
+    <div class="output-wrap">
+      <div class="output" id="out"><div class="placeholder">Results will appear here</div></div>
+      <button class="copy-btn" id="cpbtn" onclick="copyResult()" style="display:none">Copy</button>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <p>Built with ⚡ by CodeSnap · <a href="https://github.com/q15432123/codesnap" target="_blank">GitHub</a></p>
+  <p style="margin-top:4px">Powered by AI · No data stored · 100% free</p>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+let convertMode=false;
+
+function toggleConvert(){
+  convertMode=!convertMode;
+  $('target').style.display=convertMode?'inline-block':'none';
+  if(convertMode)run('convert');
+}
+
+async function run(action){
+  const code=$('code').value.trim();
+  if(!code){$('out').innerHTML='<div class="placeholder">Paste some code first!</div>';return}
+
+  const lang=$('lang').value;
+  const target=$('target').value;
+  const titles={explain:'💡 Explanation',debug:'🐛 Bug Report',convert:`🔄 Converted to ${target}`,optimize:'🚀 Optimized'};
+  $('out-title').textContent=titles[action]||'Result';
+  $('out').innerHTML='<div class="loading"><div class="spinner"></div>Analyzing...</div>';
+  $('cpbtn').style.display='none';
+
+  // Disable buttons
+  document.querySelectorAll('.btn').forEach(b=>b.disabled=true);
+
+  try{
+    const body={code,lang};
+    if(action==='convert')body.target_lang=target;
+
+    const r=await fetch('/api/'+action,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(!r.ok){
+      const e=await r.text();
+      $('out').innerHTML=`<div style="color:var(--r)">Error ${r.status}: ${e.slice(0,200)}</div>`;
+      return;
+    }
+    const data=await r.json();
+    $('out').innerHTML=md(data.result||'No result');
+    $('cpbtn').style.display='block';
+  }catch(e){
+    $('out').innerHTML=`<div style="color:var(--r)">Error: ${e.message}</div>`;
+  }finally{
+    document.querySelectorAll('.btn').forEach(b=>b.disabled=false);
+  }
+}
+
+function md(s){
+  let h=s;
+  h=h.replace(/```(\w*)\n([\s\S]*?)```/g,'<pre><code>$2</code></pre>');
+  h=h.replace(/`(.+?)`/g,'<code>$1</code>');
+  h=h.replace(/^### (.+)$/gm,'<h3>$1</h3>');
+  h=h.replace(/^## (.+)$/gm,'<h2>$1</h2>');
+  h=h.replace(/^# (.+)$/gm,'<h1>$1</h1>');
+  h=h.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+  h=h.replace(/\*(.+?)\*/g,'<em>$1</em>');
+  h=h.replace(/^- (.+)$/gm,'<li>$1</li>');
+  h=h.replace(/^\d+\. (.+)$/gm,'<li>$1</li>');
+  h=h.replace(/\n\n+/g,'</p><p>');
+  return '<p>'+h+'</p>';
+}
+
+function copyResult(){
+  const text=$('out').innerText;
+  navigator.clipboard.writeText(text).then(()=>{
+    $('cpbtn').textContent='Copied!';
+    setTimeout(()=>$('cpbtn').textContent='Copy',1500);
+  });
+}
+
+// Auto-detect language from code
+$('code').addEventListener('input',()=>{
+  const c=$('code').value;
+  if(!$('lang').value){
+    if(/^(import |from .+ import |def |class .*:)/.test(c))$('lang').value='python';
+    else if(/^(const |let |var |function |=>|import .+ from)/.test(c))$('lang').value='javascript';
+    else if(/^(package |func |import \()/.test(c))$('lang').value='go';
+    else if(/^(fn |let mut |use |pub )/.test(c))$('lang').value='rust';
+  }
+});
+</script>
+</body>
+</html>
