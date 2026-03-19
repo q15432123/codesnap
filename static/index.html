@@ -228,11 +228,14 @@ marked.setOptions({highlight:(code,lang)=>{try{return lang&&hljs.getLanguage(lan
 const $=id=>document.getElementById(id);
 const TITLES={explain:'💡 Explanation',debug:'🐛 Bug Report',convert:'🔄 Converted',optimize:'🚀 Optimized',document:'📝 Documentation',test:'🧪 Unit Tests',refactor:'♻️ Refactored',security:'🔒 Security Audit'};
 
+let _lastAction='', _lastCode='', _lastLang='', _lastTarget='';
+
 async function run(action){
   const code=editor.getValue().trim();
   if(!code){$('out').innerHTML='<div class="placeholder">Paste some code first!</div>';return}
   const lang=detectLang(code);
   const target=$('target').value;
+  _lastAction=action;_lastCode=code;_lastLang=lang;_lastTarget=target;
 
   $('out-title').textContent=TITLES[action]||'Result';
   $('out').innerHTML='<div class="loading"><div class="spinner"></div>Analyzing with AI...</div>';
@@ -240,22 +243,68 @@ async function run(action){
   document.querySelectorAll('.btn').forEach(b=>b.disabled=true);
 
   try{
-    const body={code,lang};
+    const body={code,lang,stream:true};
     if(action==='convert')body.target_lang=target;
+
     const r=await fetch('/api/'+action,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-    if(!r.ok){const e=await r.json().catch(()=>({error:'Server error'}));$('out').innerHTML=`<div style="color:var(--r);padding:20px">Error: ${e.error||r.status}</div>`;return}
-    const data=await r.json();
-    const html=marked.parse(data.result||'No result');
-    $('out').innerHTML=html;
-    $('cpbtn').style.display='block';
-    // Save to history
-    saveHist(action,code,data.result);
+
+    // Rate limit → show countdown
+    if(r.status===429){
+      const err=await r.json().catch(()=>({}));
+      const wait=err.retry_after||60;
+      $('out').innerHTML='';
+      for(let i=wait;i>0;i--){
+        $('out').innerHTML=`<div style="color:var(--y);padding:20px">⏳ Rate limited. Retry in <strong>${i}s</strong>...</div>`;
+        await new Promise(r=>setTimeout(r,1000));
+      }
+      document.querySelectorAll('.btn').forEach(b=>b.disabled=false);
+      run(action); // auto-retry
+      return;
+    }
+
+    if(!r.ok){
+      const e=await r.json().catch(()=>({error:'Server error '+r.status}));
+      $('out').innerHTML=`<div style="color:var(--r);padding:20px">Error: ${e.error||r.status}<br><button class="btn b-ghost" onclick="retry()" style="margin-top:8px">🔄 Retry</button></div>`;
+      return;
+    }
+
+    // SSE streaming — typewriter effect
+    if(r.headers.get('content-type')?.includes('text/event-stream')){
+      $('out').innerHTML='';
+      let full='';
+      const reader=r.body.getReader();
+      const dec=new TextDecoder();
+      while(true){
+        const{done,value}=await reader.read();
+        if(done)break;
+        const text=dec.decode(value);
+        for(const line of text.split('\n')){
+          if(!line.startsWith('data: '))continue;
+          const d=line.slice(6);
+          if(d==='[DONE]')break;
+          if(d.startsWith('[ERROR]')){$('out').innerHTML+=`<span style="color:var(--r)">${d}</span>`;break}
+          full+=d;
+          $('out').innerHTML=marked.parse(full);
+          $('out').scrollTop=$('out').scrollHeight;
+        }
+      }
+      $('cpbtn').style.display='block';
+      saveHist(action,code,full);
+    }else{
+      // Fallback: JSON response
+      const data=await r.json();
+      $('out').innerHTML=marked.parse(data.result||'No result');
+      $('cpbtn').style.display='block';
+      saveHist(action,code,data.result);
+    }
   }catch(e){
-    $('out').innerHTML=`<div style="color:var(--r);padding:20px">Error: ${e.message}</div>`;
+    $('out').innerHTML=`<div style="color:var(--r);padding:20px">Error: ${e.message}<br><button class="btn b-ghost" onclick="retry()" style="margin-top:8px">🔄 Retry</button></div>`;
   }finally{
     document.querySelectorAll('.btn').forEach(b=>b.disabled=false);
   }
 }
+
+function retry(){if(_lastAction)run(_lastAction)}
 
 function copyResult(){
   const text=$('out').innerText;

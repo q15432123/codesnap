@@ -8,8 +8,8 @@ import respx
 import httpx
 from httpx import AsyncClient, ASGITransport
 
-import server as srv
-from server import app
+from app import llm as srv_llm
+from app.main import app
 
 MOCK_LLM_RESPONSE = {
     "choices": [{"message": {"content": "This function adds two numbers."}}]
@@ -19,10 +19,10 @@ LLM_URL = "https://api.kimi.com/coding/v1/chat/completions"
 
 @pytest_asyncio.fixture(autouse=True)
 async def setup_client():
-    srv._client = httpx.AsyncClient(timeout=10, headers=srv.HEADERS)
+    srv_llm._client = httpx.AsyncClient(timeout=10, headers=srv_llm.HEADERS)
     yield
-    await srv._client.aclose()
-    srv._client = None
+    await srv_llm._client.aclose()
+    srv_llm._client = None
 
 
 @pytest.fixture
@@ -83,7 +83,7 @@ async def test_optimize(mock_llm):
 @pytest.mark.asyncio
 async def test_code_too_long():
     async with _ac() as c:
-        r = await c.post("/api/explain", json={"code": "x" * 10001})
+        r = await c.post("/api/explain", json={"code": "x" * 50001})
         assert r.status_code == 422
 
 

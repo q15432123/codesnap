@@ -18,6 +18,6 @@ jobs:
           python-version: "3.12"
       - run: pip install -r requirements.txt
       - name: Lint with ruff
-        run: ruff check server.py
+        run: ruff check app/ server.py
       - name: Run tests
         run: pytest tests/ -v
